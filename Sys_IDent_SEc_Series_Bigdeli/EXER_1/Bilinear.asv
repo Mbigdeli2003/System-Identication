@@ -1,0 +1,74 @@
+clc
+clear all
+close all
+[U Y]=input_output;
+init1=[105 2 10 0.5 ];
+n=150;
+teta_1=init1(1);
+teta_2=init1(2);
+teta_3=init1(3);
+teta_4=init1(4);
+ teta_1_2=[teta_1 ;teta_2  ];
+teta_3_4=[teta_3 ;teta_4  ];
+phi=zeros(1,2);
+alpha=1e6;
+k = zeros(length(phi(1,:)));
+p = zeros(length(phi(1,:)));
+p(:,:,1) = alpha*eye(length(phi(1,:)));
+y_1=ones(1,n);
+y_2=ones(1,n);
+k1=1;k2=1;
+
+for i=2:n
+    
+    k1(i)=Y(i)-(teta_3_4(1,i-1)*U(i)^teta_3_4(2,i-1));
+    k2(i)=Y(i)-(teta_1_2(1,i-1)*U(i)^teta_1_2(2,i-1));          
+    y_1(i)=log(k1(i));
+    y_2(i)=log(k2(i));
+     phi(i,:)=[1 log(U(i))];
+    k(:,i)=p(:,:,i-1)*phi(i,:)'/(1+phi(i,:)*p(:,:,i-1)*phi(i,:)');
+    p(:,:,i)=(eye(length(phi(i,:)))-k(:,i)*phi(i,:))*p(:,:,i-1);
+    teta_1_2(:,i)=teta_1_2(:,i-1)+k(:,i)*(y_2(i)-phi(i,:)*teta_1_2(:,i-1));
+    teta_3_4(:,i)=teta_3_4(:,i-1)+k(:,i)*(y_1(i)-phi(i,:)*teta_3_4(:,i-1));
+    
+    
+    
+    
+%     
+%     teta_3_4(:,i+1)=pinv(phi(:,i)')*y_2(i);
+%     teta_1_2(:,i+1)=pinv(phi(:,i)')*y_1(i);
+% %     
+%       teta_1=exp(teta_1_2(:,i+1));
+%       teta_3=exp(teta_3_4(:,i+1));
+%       teta=[teta_1 teta_1_2(2) teta_3 teta_3_4(2) ];
+    
+ end
+ %% plotting
+% Input plot
+figure;
+plot(U,'linewidth',2.5);legend('input');grid on
+%% ouput
+figure;
+plot(Y,'linewidth',2.5);legend('OUTPUT');grid on
+
+%% Training Plot
+ figure;
+ subplot(2,1,1);
+ plot(ERR_train,'b','linewidth',2.5);legend('train error ');
+ subplot(2,1,2);
+ plot(Y_train,'b--','linewidth',3);hold on
+ plot(Y(1:150),'r--','linewidth',2.25);legend('Y train','Y')
+
+%% validation Plot
+ figure;
+ subplot(2,1,1);
+ plot(ERR,'b','linewidth',2.5);legend('validation error ');grid on
+ subplot(2,1,2);
+ plot(Y_valid,'b--','linewidth',3);hold on
+ plot(Y_sys,'r--','linewidth',2.25);legend('Y Valid','Y');grid on
+
+%     
+    
+    
+    
+    

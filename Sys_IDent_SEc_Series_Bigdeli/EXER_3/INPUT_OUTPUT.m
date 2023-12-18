@@ -1,0 +1,19 @@
+function [U y e phi]=INPUT_OUTPUT
+%% input
+%% number of datas
+n=200
+U= idinput(n,'prbs');
+%% White noise generation
+e=random('normal',0,0.2^(1/2),n,1);
+%% system parameters
+A=[1 0.6 0.08];
+B=[0.5 -0.9];
+C=[3 6 3];
+y=ones(n,1);
+for i=3:150
+    y(i)=-(A(2)*y(i-1)+A(3)*y(i-2))+B(1)*U(i)+B(2)*U(i-1)+C(1)*e(i)+C(2)*e(i-1)+C(3)*e(i-2);
+           phi(i,:)=[-y(i-1) -y(i-2) U(i) U(i-1)];
+
+
+end
+end

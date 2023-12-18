@@ -1,0 +1,55 @@
+clc
+clear all
+close all
+% function calling
+[U Y]=input_output;
+
+%%%%%%%%%%% training %%%%%%%%%%%%%%%%
+n=150;
+init=[2 1.7 5 1]; % initial condition
+teta1=init(1);
+teta2=init(2);
+teta3=init(3);
+teta4=init(4);
+teta=[teta1;teta2;teta3;teta4];
+alpha=.1*ones(1,n);
+
+for i=1:n
+    f(i)=-Y(i)+teta(1,i)*U(i)^teta(2,i)+teta(3,i)*U(i)^teta(4,i);
+    df(:,i)=[U(i)^teta(2,i);teta(1,i)*log(U(i))*U(i)^teta(2,i);U(i)^teta(4,i);teta(3,i)*log(U(i))*U(i)^teta(4,i)];
+    %ddf=[0 U(i)^teta2 0 0;U(i)^teta2 teta1*U(i)^teta2 0 0;0 0 0 U(i)^teta4;0 0 U(i)^teta4 teta3*U(i)^teta4];
+    teta(:,i+1)=teta(:,i)-(alpha(i)*pinv(df(:,i)')*f(i));
+    teta(:,i+1)
+end
+
+%% validation
+U_VALID=U(151:200)
+Y_sys=Y(151:200)
+for j=1:50
+Y_valid(j)=teta(1,i)*U_VALID(j)^teta(2,i)+teta(3,i)*U_VALID(j)^teta(4,i);
+ERR(j)=abs(Y_valid(j)-Y_sys(j));
+SSE=sum((Y_valid(j)-Y_sys(j)).^2)
+end
+%% Training Plot
+
+
+    
+
+%% validation Plot
+ figure;
+ subplot(2,1,1);
+ plot(ERR,'b','linewidth',2.5);legend('validation error ');
+ subplot(2,1,2);
+ plot(Y_valid,'b--','linewidth',3);hold on
+ plot(Y_sys,'r--','linewidth',2.25);legend('Y Valid','Y');
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+clc
+clear all
+close all
+[U Y]=input_output;
+init1=[3.5 1 6.5 0.3];
+n=150;
+teta_1=init1(1);
+teta_2=init1(2);
+teta_3=init1(3);
+teta_4=init1(4);
+teta_3_4=[teta_3;teta_4];
+teta_1_2=[teta_1;teta_2];
+Mun=ones(1,151);
+for i=1:n
+    k1=log(Y(i)-teta_1_2(1,i)*U(i)^teta_1_2(2,i));
+    k2=log(Y(i)-teta_3_4(1,i)*U(i)^teta_3_4(2,i));
+    
+   f2(i)=-(k1)+k3+teta_3_4(2,i)*log(U(i));
+   f1(i)=-(k2)+(log(teta_1_2(1,i)))+teta_1_2(2,i)*log(U(i));
+   f1_p34(i)=(1./teta_3_4(1,i))+log(U(i));
+   f2_p12(i)=(1./teta_1_2(1,i))+log(U(i));
+   teta_1_2(:,i+1)=teta_1_2(:,i)-Mun(i)*(f2_p12(i)).^-1*f1(i);
+   teta_3_4(:,i+1)=teta_3_4(:,i)-Mun(i)*(f1_p34(i)).^-1*f2(i);
+end
